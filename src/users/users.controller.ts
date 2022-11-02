@@ -1,11 +1,10 @@
 import type { NextFunction, Request, Response } from 'express';
 
 import { BaseController } from '../common/base.controller';
-import { HTTPError } from './../errors/http-error.class';
-import type { LoggerService } from './../logger/logger.service';
+import type { ILogger } from './../logger/logger.interface';
 
 export class UsersController extends BaseController {
-  constructor(logger: LoggerService) {
+  constructor(logger: ILogger) {
     super(logger);
 
     this.bindRoutes([

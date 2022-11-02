@@ -1,11 +1,11 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import type { LoggerService } from './../logger/logger.service';
+import type { ILogger } from './../logger/logger.interface';
 import type { IExceptionFilter } from './exception.filter.interface';
 import { HTTPError } from './http-error.class';
 
 export class ExceptionFilter implements IExceptionFilter {
-  constructor(private logger: LoggerService) {
+  constructor(private logger: ILogger) {
     this.logger.info('[ExceptionFilter] registered');
   }
 

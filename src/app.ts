@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import type { Server } from 'http';
 
 import type { ExceptionFilter } from './errors/exception.filter';
-import type { LoggerService } from './logger/logger.service';
+import type { ILogger } from './logger/logger.interface';
 import type { UsersController } from './users/users.controller';
 
 export class App {
@@ -11,7 +11,7 @@ export class App {
   server: Server;
 
   constructor(
-    private logger: LoggerService,
+    private logger: ILogger,
     private exceptionFilter: ExceptionFilter,
     private usersController: UsersController
   ) {
