@@ -11,7 +11,7 @@ export abstract class BaseController {
   }
 
   get router(): Router {
-    return this.router;
+    return this._router;
   }
 
   private send<T>(res: Response, code: number, data: T): Response {
