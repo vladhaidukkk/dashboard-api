@@ -5,6 +5,8 @@ import 'reflect-metadata';
 import { BaseController } from '../common/base.controller';
 import { KEYS } from './../keys';
 import type { ILogger } from './../logger/logger.interface';
+import type { UserLoginDTO } from './dto/user-login.dto';
+import type { UserRegisterDTO } from './dto/user-register.dto';
 import type { IUsersController } from './users.controller.interface';
 
 @injectable()
@@ -26,11 +28,13 @@ export class UsersController extends BaseController implements IUsersController 
     ]);
   }
 
-  register(req: Request, res: Response, next: NextFunction): void {
+  register(req: Request<{}, {}, UserRegisterDTO>, res: Response, next: NextFunction): void {
+    console.log(req.body);
     this.created(res, { message: 'Registered' });
   }
 
-  login(req: Request, res: Response, next: NextFunction): void {
+  login(req: Request<{}, {}, UserLoginDTO>, res: Response, next: NextFunction): void {
+    console.log(req.body);
     this.ok(res, { message: 'Logged in' });
   }
 }
