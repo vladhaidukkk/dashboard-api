@@ -1,10 +1,15 @@
 import type { NextFunction, Request, Response } from 'express';
+import { inject, injectable } from 'inversify';
+import 'reflect-metadata';
 
 import { BaseController } from '../common/base.controller';
+import { KEYS } from './../keys';
 import type { ILogger } from './../logger/logger.interface';
+import type { IUsersController } from './users.controller.interface';
 
-export class UsersController extends BaseController {
-  constructor(logger: ILogger) {
+@injectable()
+export class UsersController extends BaseController implements IUsersController {
+  constructor(@inject(KEYS.ILogger) logger: ILogger) {
     super(logger);
 
     this.bindRoutes([
@@ -21,11 +26,11 @@ export class UsersController extends BaseController {
     ]);
   }
 
-  private register(req: Request, res: Response, next: NextFunction): void {
+  register(req: Request, res: Response, next: NextFunction): void {
     this.created(res, { message: 'Registered' });
   }
 
-  private login(req: Request, res: Response, next: NextFunction): void {
+  login(req: Request, res: Response, next: NextFunction): void {
     this.ok(res, { message: 'Logged in' });
   }
 }

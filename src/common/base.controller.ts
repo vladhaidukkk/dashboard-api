@@ -1,8 +1,11 @@
 import { Response, Router } from 'express';
+import { injectable } from 'inversify';
+import 'reflect-metadata';
 
 import type { ILogger } from './../logger/logger.interface';
 import type { IControllerRoute } from './route.interface';
 
+@injectable()
 export abstract class BaseController {
   private readonly _router: Router;
 

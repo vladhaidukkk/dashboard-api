@@ -1,11 +1,15 @@
 import type { NextFunction, Request, Response } from 'express';
+import { inject, injectable } from 'inversify';
+import 'reflect-metadata';
 
+import { KEYS } from './../keys';
 import type { ILogger } from './../logger/logger.interface';
 import type { IExceptionFilter } from './exception.filter.interface';
 import { HTTPError } from './http-error.class';
 
+@injectable()
 export class ExceptionFilter implements IExceptionFilter {
-  constructor(private logger: ILogger) {
+  constructor(@inject(KEYS.ILogger) private logger: ILogger) {
     this.logger.info('[ExceptionFilter] registered');
   }
 
