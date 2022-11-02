@@ -3,11 +3,12 @@ import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
 
 import { BaseController } from '../common/base.controller';
+import { ValidateMiddleware } from './../common/validate.middleware';
 import { HTTPError } from './../errors/http-error.class';
 import { KEYS } from './../keys';
 import type { ILogger } from './../logger/logger.interface';
-import type { UserLoginDTO } from './dto/user-login.dto';
-import type { UserRegisterDTO } from './dto/user-register.dto';
+import { UserLoginDTO } from './dto/user-login.dto';
+import { UserRegisterDTO } from './dto/user-register.dto';
 import type { IUsersController } from './users.controller.interface';
 import type { IUsersService } from './users.service.interface';
 
@@ -24,11 +25,13 @@ export class UsersController extends BaseController implements IUsersController 
         method: 'post',
         path: '/register',
         handler: this.register,
+        middlewares: [new ValidateMiddleware(UserRegisterDTO)],
       },
       {
         method: 'post',
         path: '/login',
         handler: this.login,
+        middlewares: [new ValidateMiddleware(UserLoginDTO)],
       },
     ]);
   }
