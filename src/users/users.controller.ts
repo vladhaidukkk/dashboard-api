@@ -45,10 +45,18 @@ export class UsersController extends BaseController implements IUsersController 
     if (!result) {
       return next(new HTTPError(409, 'User with this email already registered', originalUrl));
     }
-    this.created(res, { email: result.email, name: result.name });
+    this.created(res, { id: result.id, email: result.email, name: result.name });
   }
 
-  login(req: Request<{}, {}, UserLoginDTO>, res: Response, next: NextFunction): void {
+  async login(
+    { body, originalUrl }: Request<{}, {}, UserLoginDTO>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    const result = await this.usersService.validateUser(body);
+    if (!result) {
+      return next(new HTTPError(401, 'Failed to authorize', originalUrl));
+    }
     this.ok(res, { message: 'Logged in' });
   }
 }

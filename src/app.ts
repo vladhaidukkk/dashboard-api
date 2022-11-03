@@ -45,7 +45,7 @@ export class App {
     this.useRoutes();
     this.useExceptionFilters();
 
-    this.prismaService.connect();
+    await this.prismaService.connect();
     this.server = this.app.listen(this.port);
     this.logger.info(`Server running at http://localhost:${this.port}`);
   }

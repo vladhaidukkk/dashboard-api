@@ -6,4 +6,5 @@ export const KEYS = {
   IExceptionFilter: Symbol.for('IExceptionFilter'),
   IUsersController: Symbol.for('IUsersController'),
   IUsersService: Symbol.for('IUsersService'),
+  IUsersRepository: Symbol.for('IUsersRepository'),
 };
