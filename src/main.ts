@@ -3,6 +3,8 @@ import { Container, ContainerModule, interfaces } from 'inversify';
 import { App } from './app';
 import { ConfigService } from './config/config.service';
 import type { IConfigService } from './config/config.service.interface';
+import { PrismaService } from './database/prisma.service';
+import type { IPrismaService } from './database/prisma.service.interface';
 import { ExceptionFilter } from './errors/exception.filter';
 import type { IExceptionFilter } from './errors/exception.filter.interface';
 import { KEYS } from './keys';
@@ -24,16 +26,17 @@ const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<IExceptionFilter>(KEYS.IExceptionFilter).to(ExceptionFilter);
   bind<IUsersController>(KEYS.IUsersController).to(UsersController);
   bind<IUsersService>(KEYS.IUsersService).to(UsersService);
+  bind<IPrismaService>(KEYS.IPrismaService).to(PrismaService).inSingletonScope();
   bind<App>(KEYS.Application).to(App);
 });
 
-function bootstrap(): IBootstrapReturn {
+async function bootstrap(): Promise<IBootstrapReturn> {
   const appContainer = new Container();
   appContainer.load(appBindings);
   const app = appContainer.get<App>(KEYS.Application);
-  app.init();
+  await app.init();
 
   return { appContainer, app };
 }
 
-export const { appContainer, app } = bootstrap();
+export const boot = bootstrap();

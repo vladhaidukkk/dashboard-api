@@ -5,6 +5,7 @@ import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
 
 import type { IConfigService } from './config/config.service.interface';
+import type { IPrismaService } from './database/prisma.service.interface';
 import type { IExceptionFilter } from './errors/exception.filter.interface';
 import { KEYS } from './keys';
 import type { ILogger } from './logger/logger.interface';
@@ -20,7 +21,8 @@ export class App {
     @inject(KEYS.ILogger) private logger: ILogger,
     @inject(KEYS.IConfigService) private configService: IConfigService,
     @inject(KEYS.IExceptionFilter) private exceptionFilter: IExceptionFilter,
-    @inject(KEYS.IUsersController) private usersController: IUsersController
+    @inject(KEYS.IUsersController) private usersController: IUsersController,
+    @inject(KEYS.IPrismaService) private prismaService: IPrismaService
   ) {
     this.app = express();
     this.port = Number(this.configService.get('PORT')) || 8080;
@@ -38,11 +40,12 @@ export class App {
     this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
   }
 
-  init(): void {
+  async init(): Promise<void> {
     this.useMiddlewares();
     this.useRoutes();
     this.useExceptionFilters();
 
+    this.prismaService.connect();
     this.server = this.app.listen(this.port);
     this.logger.info(`Server running at http://localhost:${this.port}`);
   }
