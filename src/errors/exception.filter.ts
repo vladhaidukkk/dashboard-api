@@ -10,7 +10,7 @@ import { HTTPError } from './http-error.class';
 @injectable()
 export class ExceptionFilter implements IExceptionFilter {
   constructor(@inject(KEYS.ILogger) private logger: ILogger) {
-    this.logger.info('[ExceptionFilter] registered');
+    this.logger.info('[ExceptionFilter] Registered');
   }
 
   catch(err: Error | HTTPError, req: Request, res: Response, next: NextFunction): void {
