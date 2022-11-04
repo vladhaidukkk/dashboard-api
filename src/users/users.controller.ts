@@ -1,8 +1,10 @@
 import type { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
+import { sign } from 'jsonwebtoken';
 import 'reflect-metadata';
 
 import { BaseController } from '../common/base.controller';
+import type { IConfigService } from '../config/config.service.interface';
 import { ValidateMiddleware } from './../common/validate.middleware';
 import { HTTPError } from './../errors/http-error.class';
 import { KEYS } from './../keys';
@@ -16,6 +18,7 @@ import type { IUsersService } from './users.service.interface';
 export class UsersController extends BaseController implements IUsersController {
   constructor(
     @inject(KEYS.ILogger) logger: ILogger,
+    @inject(KEYS.IConfigService) private configService: IConfigService,
     @inject(KEYS.IUsersService) private usersService: IUsersService
   ) {
     super(logger);
@@ -57,6 +60,18 @@ export class UsersController extends BaseController implements IUsersController 
     if (!result) {
       return next(new HTTPError(401, 'Failed to authorize', originalUrl));
     }
-    this.ok(res, { message: 'Logged in' });
+    const jwt = await this.signJWT(body.email, this.configService.get('SECRET'));
+    this.ok(res, { jwt });
+  }
+
+  private async signJWT(email: string, secret: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      sign({ email, iat: Date.now() }, secret, { algorithm: 'HS256' }, (err, token) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(token as string);
+      });
+    });
   }
 }
