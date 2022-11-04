@@ -17,7 +17,7 @@ export class AuthMiddleware implements IMiddleware {
     next();
   }
 
-  private async verifyJWT(token: string): Promise<JwtPayload | null> {
+  private verifyJWT(token: string): Promise<JwtPayload | null> {
     return new Promise((resolve) => {
       verify(token, this.secret, (err, payload) => {
         if (err) {

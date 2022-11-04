@@ -5,6 +5,7 @@ import 'reflect-metadata';
 
 import { BaseController } from '../common/base.controller';
 import type { IConfigService } from '../config/config.service.interface';
+import { AuthGuard } from './../common/auth.guard';
 import { ValidateMiddleware } from './../common/validate.middleware';
 import { HTTPError } from './../errors/http-error.class';
 import { KEYS } from './../keys';
@@ -40,6 +41,7 @@ export class UsersController extends BaseController implements IUsersController 
         method: 'get',
         path: '/info',
         handler: this.info,
+        middlewares: [new AuthGuard()],
       },
     ]);
   }
@@ -69,15 +71,12 @@ export class UsersController extends BaseController implements IUsersController 
     this.ok(res, { jwt });
   }
 
-  async info({ user, originalUrl }: Request, res: Response, next: NextFunction): Promise<void> {
-    if (!user) {
-      return next(new HTTPError(401, 'You are not logged in', originalUrl));
-    }
+  async info({ user }: Request, res: Response, next: NextFunction): Promise<void> {
     const userInfo = await this.usersService.getUserInfo(user);
     this.ok(res, { id: userInfo?.id, email: userInfo?.email, name: userInfo?.name });
   }
 
-  private async signJWT(email: string, secret: string): Promise<string> {
+  private signJWT(email: string, secret: string): Promise<string> {
     return new Promise((resolve, reject) => {
       sign({ email, iat: Date.now() }, secret, { algorithm: 'HS256' }, (err, token) => {
         if (err) {
