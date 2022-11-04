@@ -36,6 +36,11 @@ export class UsersController extends BaseController implements IUsersController 
         handler: this.login,
         middlewares: [new ValidateMiddleware(UserLoginDTO)],
       },
+      {
+        method: 'get',
+        path: '/info',
+        handler: this.info,
+      },
     ]);
   }
 
@@ -62,6 +67,14 @@ export class UsersController extends BaseController implements IUsersController 
     }
     const jwt = await this.signJWT(body.email, this.configService.get('SECRET'));
     this.ok(res, { jwt });
+  }
+
+  async info({ user, originalUrl }: Request, res: Response, next: NextFunction): Promise<void> {
+    if (!user) {
+      return next(new HTTPError(401, 'You are not logged in', originalUrl));
+    }
+    const userInfo = await this.usersService.getUserInfo(user);
+    this.ok(res, { id: userInfo?.id, email: userInfo?.email, name: userInfo?.name });
   }
 
   private async signJWT(email: string, secret: string): Promise<string> {

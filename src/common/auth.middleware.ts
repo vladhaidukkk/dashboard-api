@@ -18,10 +18,10 @@ export class AuthMiddleware implements IMiddleware {
   }
 
   private async verifyJWT(token: string): Promise<JwtPayload | null> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       verify(token, this.secret, (err, payload) => {
         if (err) {
-          reject(null);
+          resolve(null);
         }
         resolve(payload as JwtPayload);
       });
