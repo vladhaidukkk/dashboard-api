@@ -13,4 +13,5 @@
 
 # misc
 .DS_Store
-.clinic
+/.clinic
+/coverage
